@@ -1,0 +1,15 @@
+
+{
+{{ range $host, $containers := groupByMulti $ "Env.VIRTUAL_HOST" "," }}
+  "{{ $host }}": [
+      {{ range $container := $containers }}
+	      {{ $addrLen := len $container.Addresses }}
+	      {{ if eq $addrLen 1 }}
+		      {{ with $address := index $container.Addresses 0 }}
+		         {"name": "{{$container.Name}}", "subdomain": "{{$container.Env.SUBDOMAIN}}", "ip": "{{ $address.IP }}", "port": "{{ $address.Port }}"}
+		      {{ end }}
+	      {{ end }}
+      {{ end }}
+    ],
+{{ end }}
+}
